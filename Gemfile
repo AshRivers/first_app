@@ -5,14 +5,18 @@ gem 'rails', '3.2.8'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 group :development do
-  #gem 'sqlite3'
+  gem 'sqlite3'
   gem 'rspec-rails', '~>2.6.1'
 end
   
-  gem 'pg'
+  #gem 'pg'
+  group :production do
+  # gems specifically for Heroku go here
+  gem "pg"
+end
 
 group :test do
-  #gem 'sqlite3'
+  gem 'sqlite3'
   gem 'rspec-rails', '~>2.6.1'
   gem 'webrat', '~>0.7.1'
   gem 'spork'
