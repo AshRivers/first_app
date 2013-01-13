@@ -1,4 +1,6 @@
 Samole::Application.routes.draw do
+  get "users/new"
+
   get "pages/home"
 
   get "pages/contact"
@@ -11,6 +13,7 @@ Samole::Application.routes.draw do
   match '/about',   to:  'pages#about'
   match '/help',    to:  'pages#help'
 
+  match '/signup', to: 'users#new'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
