@@ -20,6 +20,7 @@ group :test do
   gem 'rspec-rails', '~>2.6.1'
   gem 'webrat', '~>0.7.1'
   gem 'spork'
+  gem 'annotate'
 end
 
 # Gems used only for assets and not required
@@ -31,7 +32,7 @@ group :assets do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
 
-  gem 'uglifier', '>= 1.0.3'
+  #gem 'uglifier', '>= 1.0.3'
 end
 
 gem 'jquery-rails'
