@@ -1,3 +1,4 @@
+require 'factory_girl_rails'
 require 'spork'
 
 Spork.prefork do
@@ -11,6 +12,10 @@ Spork.prefork do
   # Requires supporting files with custom matchers and macros, etc,
   # in ./support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
+    def test_sign_in(user)
+      controller.sign_in(user)
+    end
 
   RSpec.configure do |config|
     # == Mock Framework
@@ -28,6 +33,8 @@ Spork.prefork do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
+
+    
   end
 end
 
