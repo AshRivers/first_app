@@ -5,4 +5,8 @@ module UsersHelper
 												class: "gravatar",
 												gravatar: options)
 	end
+
+	def self.admin?
+		self.admin
+	end
 end

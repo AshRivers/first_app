@@ -68,6 +68,14 @@ describe UsersController do
       response.should have_selector("img", class: "gravatar")
     end
 
+    it "should have users microposts" do
+      @mp1 = FactoryGirl.create(:micropost, content: "asd", user: @user, created_at: 1.day.ago)
+      @mp2 = FactoryGirl.create(:micropost, content: "dsa", user: @user, created_at: 1.hour.ago)
+      get :show, id: @user
+      response.should have_selector("span.content", content: @mp1.content)
+      response.should have_selector("span.content", content: @mp2.content)
+    end
+
   end
 
   describe "POST 'create" do
@@ -278,13 +286,29 @@ describe UsersController do
         end
       end
 
+      it "should_not have 'delete' links" do
+        get :index
+        response.should_not have_selector("input", value: "delete")
+      end
+
       it "should paginate users" do
         get :index
         response.should have_selector("div.pagination")
         response.should have_selector("a", href: "/users?page=2", content: "2")
         response.should have_selector("a", href: "/users?page=2", content: "Next")
       end
+    end
 
+    describe "for admin" do
+      before(:each) do
+        admin = FactoryGirl.create(:user, email: "dmn@ex.le", admin: true)
+        test_sign_in(admin)
+      end
+
+      it "should have buttons to delete" do
+        get :index
+        response.should have_selector("input", value: "delete")
+      end
     end
 
   end
@@ -314,8 +338,8 @@ describe UsersController do
     describe "as an admin user" do
 
       before(:each) do
-        admin = FactoryGirl.create(:user, email: "admin@ex.le", admin: true)
-        test_sign_in(admin)
+        @admin = FactoryGirl.create(:user, email: "admin@ex.le", admin: true)
+        test_sign_in(@admin)
       end
 
       it "should destroy a user" do
@@ -327,6 +351,12 @@ describe UsersController do
       it "should redirect to the users page" do
         delete :destroy, id: @user
         response.should redirect_to(users_path)
+      end
+
+      it "should not delete an admin user" do
+        lambda do
+          delete :destroy, id: @admin
+        end.should_not change(User, :count)
       end
 
     end
