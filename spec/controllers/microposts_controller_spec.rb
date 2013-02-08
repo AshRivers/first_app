@@ -91,6 +91,14 @@ describe MicropostsController do
           delete :destroy, :id => @micropost
         end.should change(Micropost, :count).by(-1)
       end
+
+      it "should_not destroy mp, created by another user" do
+        wrong_user = FactoryGirl.create(:user, email: FactoryGirl.generate(:email))
+        @mp2 = FactoryGirl.create(:micropost, user: wrong_user, content: "content")
+        lambda do
+          delete :destroy, id: @mp2
+        end.should_not change(Micropost, :count)
+      end
     end
 
   end

@@ -5,14 +5,44 @@ describe PagesController do
 
   describe "GET 'home'" do
 
-    it "should be successful" do
-      get 'home'
-      response.should be_success
+    describe "when not signed_in" do
+
+      it "should be successful" do
+        get 'home'
+        response.should be_success
+      end
+
+      it "should have right title" do
+        get 'home'
+        response.should have_selector("title", content: "| Home!")
+      end
+    end
+    
+    describe "when signed_in" do
+      before(:each) do
+        @user = test_sign_in(FactoryGirl.create(:user))
+        other_user = FactoryGirl.create(:user, email: FactoryGirl.generate(:email))
+        other_user.follow!(@user)
+      end
+
+      it "should have the right following/followers counter" do
+        get :home
+        response.should have_selector("a", :href => following_user_path(@user),
+                                           :content => "0 following")
+        response.should have_selector("a", :href => followers_user_path(@user),
+                                           :content => "1 follower")
+      end
     end
 
-    it "should have right title" do
+    it "should paginate users" do
+      @user = test_sign_in(FactoryGirl.create(:user))
+      50.times do 
+        FactoryGirl.create(:micropost, :user => @user, content: "some")
+      end
       get 'home'
-      response.should have_selector("title", content: "| Home!")
+      response.should have_selector("div.pagination")
+      response.should have_selector("a", href: "/pages/home?page=2", content: "2")
+      response.should have_selector("a", href: "/pages/home?page=2", content: "Next")
     end
 
   end

@@ -1,0 +1,10 @@
+<h1>Posted by <%= link_to @user.name, @user %></h1>
+<% unless @user.microposts.empty? %>
+
+    <table class = "microposts" summary = "user microposts">
+        <%= render @microposts %>
+    </table>
+
+	<%= will_paginate @microposts %>
+   
+<% end %>

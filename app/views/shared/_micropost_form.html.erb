@@ -2,6 +2,16 @@
   <%= render 'shared/error_messages', :object => f.object %>
   <div class="field">
     <%= f.text_area :content %>
+    <label id = "count"></label>
+    <script type="text/javascript">
+		setInterval(ShowCount, 390);
+
+		function ShowCount()
+			{
+				var Count = document.getElementById('micropost_content').value.length;
+				document.getElementById('count').innerHTML = 99 - Count;
+			}
+	</script>
   </div>
   <div class="actions">
     <%= f.submit "Submit" %>

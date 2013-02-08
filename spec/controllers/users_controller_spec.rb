@@ -76,6 +76,14 @@ describe UsersController do
       response.should have_selector("span.content", content: @mp2.content)
     end
 
+    it "should_not have delete link for diff user" do
+      @mp1 = FactoryGirl.create(:micropost, content: "asd", user: @user, created_at: 1.day.ago)
+      wrong_user = @mp1 = FactoryGirl.create(:user, email: FactoryGirl.generate(:email))
+      test_sign_in(wrong_user)
+      get :show, id: @user
+      response.should_not have_selector("a", content: "delete")
+    end
+
   end
 
   describe "POST 'create" do
@@ -359,6 +367,42 @@ describe UsersController do
         end.should_not change(User, :count)
       end
 
+    end
+
+  end
+
+  describe "follow pages" do
+
+    describe "when not signed-in" do
+
+      it "should protect 'following'" do
+        get :following, id: 1
+        response.should redirect_to(signin_path)
+      end
+
+      it "should protect 'followers" do
+        get :followers, id: 1
+        response.should redirect_to(signin_path)
+      end
+    end
+
+    describe "when signed-in" do
+        
+      before(:each) do
+        @user = test_sign_in(FactoryGirl.create(:user))
+        @other_user = FactoryGirl.create(:user, email: FactoryGirl.generate(:email))
+        @user.follow!(@other_user)
+      end
+      
+      it "should show user followers" do
+        get :followers, id: @other_user
+        response.should have_selector("a", href: user_path(@user), content: @user.name)
+      end
+
+      it "should show user following" do
+        get :following, id: @user
+        response.should have_selector("a", href: user_path(@other_user), content: @other_user.name)
+      end
     end
 
   end

@@ -1,9 +1,15 @@
 Samole::Application.routes.draw do
   #get "sessions/new"
-
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
+  
   resources :users
   resources :sessions, only: [:new,:create,:destroy]
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
 
   get "pages/home"
 
@@ -51,6 +57,10 @@ Samole::Application.routes.draw do
   #     resources :comments, :sales
   #     resource :seller
   #   end
+
+  resources :users do
+    resources :microposts
+  end
 
   # Sample resource route with more complex sub-resources
   #   resources :products do
